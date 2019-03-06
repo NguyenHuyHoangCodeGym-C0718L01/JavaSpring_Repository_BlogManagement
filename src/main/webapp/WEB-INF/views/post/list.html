@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>List Blog</title>
+    <style>
+        .navbar {
+            overflow: hidden;
+            background-color: #333;
+        }
+
+        .navbar a {
+            float: left;
+            font-size: 16px;
+            color: white;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+        }
+        .dropdown {
+            float: left;
+            overflow: hidden;
+        }
+
+        .dropdown .dropbtn {
+            font-size: 16px;
+            border: none;
+            outline: none;
+            color: white;
+            padding: 14px 16px;
+            background-color: inherit;
+            font-family: inherit;
+            margin: 0;
+        }
+
+        .navbar a:hover, .dropdown:hover .dropbtn {
+            background-color: red;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f9f9f9;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+        }
+
+        .dropdown-content a {
+            float: none;
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            text-align: left;
+        }
+
+        .dropdown-content a:hover {
+            background-color: #ddd;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+<div class="navbar">
+    <a href="/blog">Blog</a>
+    <a href="/categories">Category</a>
+    <div class="dropdown">
+        <button class="dropbtn">Type
+            <i class="fa fa-caret-down"></i>
+        </button>
+        <div class="dropdown-content" th:each="category : ${categories}">
+            <a th:href="/posts/${category.name}" th:value="${category.name}"></a>
+        </div>
+    </div>
+</div>
+<a href="/create-blog">Create new blog</a>
+<h1>Blogs</h1>
+<form>
+    Search by name:
+    <input name="blogName" type="text"/><br/>
+    <input name="sortType" type="radio" value="ASC">Time Created ASC<br/>
+    <input name="sortType" type="radio" value="DESC">Time Created DESC<br/>
+    <input type="submit" value="Search"/>
+</form><br/>
+<table border="1">
+    <tr>
+        <th>Blog name</th>
+        <th>Author name</th>
+        <th>Category name</th>
+        <th>View</th>
+        <th>Edit</th>
+        <th>Delete</th>
+    </tr>
+    <th:block th:each="post : ${posts}">
+        <tr>
+            <td th:text="${post.name}"></td>
+            <td th:text="${post.author}"></td>
+            <td th:text="${post.category.name}"></td>
+            <td><a th:href="@{/view-blog/__${post.id}__ }">View</a></td>
+            <td><a th:href="@{/edit-blog/__${post.id}__ }">Edit</a></td>
+            <td><a th:href="@{/delete-blog/__${post.id}__ }">Delete</a></td>
+        </tr>
+    </th:block>
+</table>
+<div>
+    <a th:href="@{'/blog'(page=${posts.number - 1})}" th:if="${posts.hasPrevious()}">Previous</a>
+    <span th:text="${posts.number + 1}"></span>/<span th:text="${posts.totalPages}"></span>
+    <a th:href="@{'/blog'(page=${posts.number + 1})}" th:if="${posts.hasNext()}">Next</a>
+</div>
+</body>
+</html>

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:width="content=${post.content}">Delete blog</title>
+    <script src="https://cloud.tinymce.com/5/tinymce.min.js"></script>
+    <script>tinymce.init({ selector:'textarea' });</script>
+    <style>
+        .navbar {
+            overflow: hidden;
+            background-color: #333;
+        }
+
+        .navbar a {
+            float: left;
+            font-size: 16px;
+            color: white;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+        }
+        .dropdown {
+            float: left;
+            overflow: hidden;
+        }
+
+        .dropdown .dropbtn {
+            font-size: 16px;
+            border: none;
+            outline: none;
+            color: white;
+            padding: 14px 16px;
+            background-color: inherit;
+            font-family: inherit;
+            margin: 0;
+        }
+
+        .navbar a:hover, .dropdown:hover .dropbtn {
+            background-color: red;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f9f9f9;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+        }
+
+        .dropdown-content a {
+            float: none;
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            text-align: left;
+        }
+
+        .dropdown-content a:hover {
+            background-color: #ddd;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+<div class="navbar">
+    <a href="/blog">Blog</a>
+    <a href="/categories">Category</a>
+    <div class="dropdown">
+        <button class="dropbtn">Type
+            <i class="fa fa-caret-down"></i>
+        </button>
+        <div class="dropdown-content" th:each="category : ${categories}">
+            <a th:href="/posts/${category.name}" th:value="${category.name}"></a>
+        </div>
+    </div>
+</div>
+<h1>Delete blog</h1>
+<h2>Are you sure?</h2>
+<p>
+    <a href="/blog">Blogs list</a>
+</p>
+<form th:action="@{/delete-blog}" th:object="${post}" method="post">
+    <input th:type="hidden" name="id" th:field="*{id}">
+    <table>
+        <tr>
+            <td>Blog name:</td>
+            <td><input type="text" th:field="*{name}"/></td>
+        </tr>
+        <tr>
+            <td>Author name:</td>
+            <td><input type="text" th:field="*{author}"/></td>
+        </tr>
+        <tr>
+            <td>Category name:</td>
+            <td><input type="text" th:field="*{category.name}"></td>
+        </tr>
+    </table>
+    <button type="button" onclick="myFunction()">Refresh content</button><br/>
+    <textarea rows="4" cols="50" name="content" id="cont" th:field="*{content}"></textarea><br/>
+    <input type="submit" value="Delete blog">
+</form>
+<script>
+    function myFunction(){
+        var content = document.getElementById("cont").value();
+        if(content != undefined){
+            var temp = tinyMCE.getContent('cont');
+            document.getElementById("cont").innerHTML = temp;
+        }
+    }
+</script>
+</body>
+</html>
